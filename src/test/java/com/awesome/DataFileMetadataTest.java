@@ -12,7 +12,7 @@ class DataFileMetadataTest {
     public void memoize(){
         AtomicInteger called = new AtomicInteger();
 
-        Supplier<Integer> lazyCaching = Memoize.memoizeSupplier(()-> called.getAndIncrement());
+        Supplier<Integer> lazyCaching = NotEfficientMemoize.memoizeSupplier(()-> called.getAndIncrement());
 
         assertThat(lazyCaching.get()).isEqualTo(0);
         assertThat(called.get()).isEqualTo(1);

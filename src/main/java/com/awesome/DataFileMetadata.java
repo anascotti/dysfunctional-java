@@ -1,7 +1,6 @@
 package com.awesome;
 
-import static com.awesome.Memoize.memoizeSupplier;
-
+import cyclops.function.Memoize;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ public class DataFileMetadata {
     private File f;
     private String content;
 
-    private Supplier<String> contentSupplier = memoizeSupplier(this::loadContent);
+    private Supplier<String> contentSupplier = Memoize.memoizeSupplier(this::loadContent);
 
     private String loadContent(){
         try {
