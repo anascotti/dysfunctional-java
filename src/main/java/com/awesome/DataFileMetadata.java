@@ -1,21 +1,26 @@
 package com.awesome;
 
+import static com.awesome.Memoize.memoizeSupplier;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.function.Supplier;
 
 public class DataFileMetadata {
 
     private long customerId;
     private String type;
     private File f;
-    private String contents;
+    private String content;
 
-    private void loadContents(){
+    private Supplier<String> contentSupplier = memoizeSupplier(this::loadContent);
+
+    private String loadContent(){
         try {
-            contents = loadFromFile();
+            return content = loadFromFile();
         }catch(IOException e){
-            throw new RuntimeException(e);
+            throw new DataFileUnavailableException(e);
         }
     }
     private String loadFromFile() throws IOException {
@@ -34,10 +39,7 @@ public class DataFileMetadata {
         return f;
     }
 
-    public String getContents() {
-        if (contents == null) {
-            loadContents();
-        }
-        return contents;
+    public String getContent() {
+        return contentSupplier.get();
     }
 }

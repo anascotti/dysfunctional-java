@@ -8,9 +8,7 @@ public class FileManager {
     private Map<Long,String> dataTable = new HashMap<>();
 
     public void process(DataFileMetadata metadata){
-
-        dataTable.put(metadata.getCustomerId(),metadata.getContents());
-
+        dataTable.put(metadata.getCustomerId(),metadata.getContent());
     }
 
 }
