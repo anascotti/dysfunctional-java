@@ -1,6 +1,6 @@
 package com.awesome;
 
-import cyclops.function.Memoize;
+import cyclops.control.Eval;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,12 +8,16 @@ import java.util.function.Supplier;
 
 public class DataFileMetadata {
 
-    private long customerId;
-    private String type;
+    private long id;
     private File f;
     private String content;
 
-    private Supplier<String> contentSupplier = Memoize.memoizeSupplier(this::loadContent);
+    private Supplier<String> contentSupplier = Eval.later(this::loadContent);
+
+    public DataFileMetadata(final long customerId, final File f) {
+        this.id = customerId;
+        this.f = f;
+    }
 
     private String loadContent(){
         try {
@@ -26,16 +30,8 @@ public class DataFileMetadata {
         return new String(Files.readAllBytes(f.toPath()));
     }
 
-    public long getCustomerId() {
-        return customerId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public File getF() {
-        return f;
+    public long getId() {
+        return id;
     }
 
     public String getContent() {

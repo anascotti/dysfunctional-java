@@ -2,21 +2,38 @@ package com.awesome;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class DataFileMetadataTest {
 
+    @TempDir
+    Path tempDir;
+
     @Test
-    public void memoize(){
-        AtomicInteger called = new AtomicInteger();
+    public void getContent() throws IOException {
+        var path = Files.createFile(tempDir.resolve("test-content.txt"));
+        Files.writeString(path, "amazing content", StandardOpenOption.APPEND);
 
-        Supplier<Integer> lazyCaching = NotEfficientMemoize.memoizeSupplier(()-> called.getAndIncrement());
+        var dataFileMetadata = new DataFileMetadata(1L, path.toFile());
 
-        assertThat(lazyCaching.get()).isEqualTo(0);
-        assertThat(called.get()).isEqualTo(1);
-        assertThat(lazyCaching.get()).isEqualTo(0);
-        assertThat(called.get()).isEqualTo(1);
+        assertThat(dataFileMetadata.getContent()).isEqualTo("amazing content");
+    }
+
+    @Test
+    public void memoize() throws IOException {
+        var path = Files.createFile(tempDir.resolve("test-memoize.txt"));
+        Files.writeString(path, "amazing content", StandardOpenOption.APPEND);
+
+        var dataFileMetadata = new DataFileMetadata(1L, path.toFile());
+
+        assertThat(dataFileMetadata.getContent()).isEqualTo("amazing content");
+        Files.writeString(path, "updated", StandardOpenOption.APPEND);
+        assertThat(dataFileMetadata.getContent()).isEqualTo("amazing content");
+
     }
 }
