@@ -8,9 +8,8 @@ import java.util.function.Supplier;
 
 public class DataFileMetadata {
 
-    private long id;
-    private File f;
-    private String content;
+    private final long id;
+    private final File f;
 
     private Supplier<String> contentSupplier = Eval.later(this::loadContent);
 
@@ -21,7 +20,7 @@ public class DataFileMetadata {
 
     private String loadContent(){
         try {
-            return content = loadFromFile();
+            return loadFromFile();
         }catch(IOException e){
             throw new DataFileUnavailableException(e);
         }
@@ -37,4 +36,6 @@ public class DataFileMetadata {
     public String getContent() {
         return contentSupplier.get();
     }
+
+    
 }
